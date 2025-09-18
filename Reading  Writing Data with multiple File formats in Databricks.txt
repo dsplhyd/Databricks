@@ -1,0 +1,97 @@
+Reading / Writing Data with File formats
+
+1.Writing data from datframe to parquet file
+
+# Create sample data
+data = [
+    (1, "Alice", 29, "New York"),
+    (2, "Bob", 35, "Los Angeles"),
+    (3, "Charlie", 40, "Chicago"),
+    (4, "Diana", 28, "Houston")
+]
+
+columns = ["id", "name", "age", "city"]
+
+# Create DataFrame
+df = spark.createDataFrame(data, columns)
+
+# Show sample data
+df.show()
+
+# Write DataFrame to Parquet
+df.write.mode("overwrite").parquet("/Volumes/test/demo/test1")
+
+=================================================
+
+2.Writing data from datframe to csv file
+
+# Create sample data
+data = [
+    (1, "Alice", 29, "New York"),
+    (2, "Bob", 35, "Los Angeles"),
+    (3, "Charlie", 40, "Chicago"),
+    (4, "Diana", 28, "Houston")
+]
+
+columns = ["id", "name", "age", "city"]
+
+# Create DataFrame
+df = spark.createDataFrame(data, columns)
+
+# Show sample data
+df.show()
+
+# Write DataFrame to Parquet
+df.write.mode("overwrite").csv("/Volumes/test/demo/test1")
+
+====================================================
+
+3.Writing data from datframe to json file
+
+
+
+data = [
+    (1, "Alice", 29, "New York"),
+    (2, "Bob", 35, "Los Angeles"),
+    (3, "Charlie", 40, "Chicago"),
+    (4, "Diana", 28, "Houston")
+]
+
+columns = ["id", "name", "age", "city"]
+
+# Create DataFrame
+df = spark.createDataFrame(data, columns)
+
+# Show sample data
+df.show()
+
+# Write DataFrame to Parquet
+df.write.mode("overwrite").json("/Volumes/test/demo/test1")
+
+========================================================
+
+
+--File Read operations with various formats
+
+
+SELECT * FROM read_files(
+  '/Volumes/test/demo/awsdb/emp_src.csv',
+  format => 'csv',
+  header => true
+);
+
+
+SELECT * FROM read_files(
+  '/Volumes/test/demo/awsdb/empsrc.txt',
+  format => 'text',
+  header => true
+);
+
+
+SELECT * 
+FROM parquet.`/Volumes/test/demo/awsdb/titanic.parquet`;
+
+
+
+
+

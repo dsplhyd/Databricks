@@ -1,0 +1,85 @@
+1.CREATE EMPLOYEES DATA FILE IN CSV FORMAT AND LOAD THE SUMMARISED DATA WITH BELOW TRANSFORMATIONS AND AGGREGATIONS APPLIED IN DIFFERENT LAYERS
+
+empid,employe_name,salary,commission,deptno
+
+1.Handle null values if any
+2.replace special characters in employee name field
+3.eliminate null rows
+4.eliminate dups
+5.filter data with employees belong to dept number 10 to 40
+6.find the aggregate average salry information deptwise.
+
+CREATE TABLE test.demo.my_parquet_table
+USING PARQUET
+LOCATION '/Volumes/test/demo/awsdb/titanic.parquet';
+
+=====================================================
+
+2. On Databricks platform ,USING A DATAFRAME DATA FOR PRODUCTS WITH BELOW METADATA ingest DATA FILE IN CSV FORMAT IN AWS S3 WITH FILENAME PRODUCTS.CSV .
+
+Metadata of prodcuts as below
+
+ProdId,Prodcut_Description,Prodname,Price,Qty
+
+USING INGESTED FILE IN S3, BUILD AN ETL PIPELINE USING AWS GLUE SERVICE TO BUILD DATA CATOLOGS FOR PRODUCTS AND APPLY BELOW TRANSFORMATIONS OVER PRODUCTS FILEDS AND LOAD TRASFORMED DATA INTO S3 BACK WITH FILE NAME PROCESSED_PRODUCTS.CSV.
+
+
+Transformations to apply are:
+
+1.rename field product description to proddesc
+2.remove duplicate data.
+
+============================================================
+
+3.SPARK SQL Assignment
+
+CREATE SALES DATA FILE IN CSV FORMAT WITH BELOW DATA AND APPLY SPARK SQL TRANSFORMATIONS
+
+transaction_id,customer_id,product,category,amount,transaction_date
+T1,C1,Laptop,Electronics,999.99,2025-01-01
+T2,C1,Mouse,Electronics,29.99,2025-01-01
+T3,C2,Shirt,Clothing,49.99,2025-01-02
+T4,C3,Phone,Electronics,799.99,2025-01-03
+T5,C2,Jeans,Clothing,89.99,2025-01-03
+
+1. FETCH DATA WITH   transaction_id, product, and amount columns.
+
+2.Select transactions where amount is greater than 50.
+
+3. sort the DATA by amount in descending order.
+
+4. find the number of transactions per category. Visualize the result using Databricks’ built-in visualization (e.g., a bar chart).
+
+5.calculate the total amount spent per customer_id.
+
+6. add a new column tax that calculates a 10% tax on the amount.
+
+7. Create a second DataFrame with customer details (customer_id, customer_name) and use join to combine it with the sales DataFrame.
+
+8. find unique category values.
+
+9. Create a small DataFrame with new transactions and use union to combine it with the original sales DataFrame.
+
+Calculate the total amount across all transactions in the combined DataFrame.
+
+10. rank transactions by amount within each customer_id (partition)AND find top purchases per customer.
+
+
+11.Calculate a running total of amount per customer_id, ordered by transaction_date
+
+12.
+
+
+==================
+
+Deliverables:
+
+Databricks Notebook: Submit a Databricks notebook (export as .dbc ) containing:
+
+Code for all tasks with clear comments.
+Output for each task using display() or %sql.
+At least one visualization .
+
+
+
+

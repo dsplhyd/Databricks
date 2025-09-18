@@ -1,0 +1,67 @@
+BRONZE
+
+
+from pyspark.sql.functions import current_timestamp
+
+# Configure cloud storage path
+input_path = "s3://test112demo/customers.txt"
+
+# Read raw CSV file
+df_raw = spark.read.format("csv") \
+    .option("header", "true") \
+    .option("inferSchema", "true") \
+    .load(input_path)
+
+# Add ingestion metadata
+df_bronze = df_raw.withColumn("ingest_time", current_timestamp())
+
+# Write to Bronze layer as Delta table
+df_bronze.write.format("delta") \
+    .mode("append") \
+    .saveAsTable("bronze_catalog.default.raw_customers")
+
+
+--------------
+SILVER
+
+from pyspark.sql.functions import col, lower, to_date
+from delta.tables import DeltaTable
+
+# Read from Bronze
+df_bronze = spark.table("bronze_catalog.default.raw_customers")
+
+# Clean and standardize
+df_silver = (df_bronze.dropDuplicates(["email"])  # Deduplicate
+    .withColumn("email", lower(col("email")))  # Standardize email
+    .withColumn("signup_date", to_date(col("signup_date"), "yyyy-MM-dd"))  # Parse dates
+    .filter(col("status").isin(["active", "inactive"])))  # Valid statuses
+
+# Write to Silver layer
+df_silver.write.format("delta") \
+    .mode("overwrite") \
+    .saveAsTable("silver_catalog.customers.processed_customers")
+
+
+-----------------------
+
+GOLD
+
+from pyspark.sql.functions import year, month, count
+
+# Read from Silver
+df_silver = spark.table("silver_catalog.customers.processed_customers")
+
+# Aggregate: Customer counts by status and signup year
+df_gold = (df_silver
+    .groupBy("status", year("signup_date").alias("signup_year"))
+    .agg(count("customer_id").alias("customer_count")))
+
+# Write to Gold layer
+df_gold.write.format("delta") \
+    .mode("overwrite") \
+    .saveAsTable("goldcat.customers.customer_metrics")
+
+# Optimize with Z-Ordering
+spark.sql("OPTIMIZE goldcat.customers.customer_metrics ZORDER BY (signup_year)")
+
+
